@@ -85,7 +85,33 @@ router.post("/login", async (req, res, next) => {
 
 router.put("/:id", (req, res, next) => {
     try{
+        const user = req.body
 
+        if (
+            !user.full_name ||
+            !user.city ||
+            !user.state ||
+            !user.email ||
+            !user.password
+        ) {
+            return res.status(404).json({
+                message: "Please enter all required fields"
+            })
+        }
+
+        Users.findById(req.params.userId)
+        .then((user) => {
+            if (user) {
+                Users.update(user, req.params.userId).then((user) => {
+                    res.json({
+                        message: "User has been successfully updated"
+                    })
+                })
+            }
+            res.status(404).json({
+                message: "User with that id could not be found"
+            })
+        })
     }catch(err) {
         next(err)
     }
