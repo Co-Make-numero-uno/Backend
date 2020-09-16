@@ -26,9 +26,17 @@ function findBy(filter) {
 		.where(filter)
 }
 
+// DELETE user by ID
+function remove(id) {
+    return db('users')
+        .where('users.id', id)
+        .del()
+}
+
 module.exports = {
     add,
     findAll,
     findBy,
-    findById
+    findById,
+    remove
 }
