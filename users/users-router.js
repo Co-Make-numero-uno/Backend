@@ -30,7 +30,7 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/register", async (req, res, next) => {
     try{
-        const { full_name, city, state, email, password } = req.body
+        const { name, city, state, email, password } = req.body
         const user = await Users.findBy({ email }).first()
 
         if(user) {
@@ -39,7 +39,7 @@ router.post("/register", async (req, res, next) => {
             })
         }
         const newUser = await Users.add({
-            full_name,
+            name,
             city,
             state,
             email,
@@ -125,3 +125,18 @@ router.delete("/:id", async (req, res, next) => {
         next(err)
     }
 })
+
+router.get("logoff", async (req, res, next) => {
+    try{
+        res.sessions.destroy((err) => {
+            if (err) {
+                next(err)
+            }
+            res.status(204).end()
+        })
+    }catch(err) {
+        next(err)
+    }
+})
+
+module.exports = router
