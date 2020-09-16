@@ -33,10 +33,18 @@ function remove(id) {
         .del()
 }
 
+// PUT / UPDATE issue
+function update(changes, id) {
+    return db('issues')
+        .where('issues.id', id)
+        .update(changes)
+}
+
 module.exports = {
     add,
     findAll,
     findBy,
     findById,
-    remove
+    remove,
+    update
 }
