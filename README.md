@@ -1,7 +1,7 @@
 # Backend
 
 ## USERS model functions
-Path is /users
+> Path is /users
 * GET all users (__findAll()__)
     * takes no input, returns all users
 * ADD user (__add(user)__)
@@ -20,7 +20,7 @@ Path is /users
     * takes an id (integer) as 2nd argument
 
 ## ISSUES model functions
-Path is /issues
+> Path is /issues
 * GET all issues (__findAll()__)
     * takes no input, returns all issues
 * ADD issue (__add(issue)__)
