@@ -75,7 +75,7 @@ router.post("/login", async (req, res, next) => {
         }
 
         res.json({
-            message: `Welcome ${user.full_name}`,
+            message: `Welcome ${user.name}`,
             token: jwt.sign(payload, secKey.JWT_SECRET)
         })
     }catch(err) {
@@ -88,7 +88,7 @@ router.put("/:id", (req, res, next) => {
         const user = req.body
 
         if (
-            !user.full_name ||
+            !user.name ||
             !user.city ||
             !user.state ||
             !user.email ||
