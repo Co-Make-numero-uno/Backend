@@ -18,6 +18,7 @@
 * UPDATE user (__update(changes, id)__)
     * takes a changes object with name, email, city, state
     * takes an id (integer) as 2nd argument
+    * returns updated user
 
 ## ISSUES model functions
 > Path is /issues
@@ -37,3 +38,4 @@
 * UPDATE issue (__update(changes, id)__)
     * takes a changes object with title, description, city, state
     * takes an id (integer) as 2nd argument
+    * returns updated issue
