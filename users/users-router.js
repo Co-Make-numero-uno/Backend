@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const Users = require("./users-model")
 
-
 const router = express.Router()
 
 router.get("/", async (req, res, next) => {
@@ -51,37 +50,50 @@ router.post("/register", async (req, res, next) => {
     }
 })
 
-router.post("/login", async (req, res, next) => {
-    try{
-        const { email, password } = req.body
-        const user = await Users.findBy({ email }).first()     
+router.post('/login', async (req, res, next) => {
+    try {
+          const { email, password } = req.body
+          const user = await Users.findBy({ email }).first()
+          
+          if (!user) {
+              return res.status(401).json({
+                  message: "Invalid Credentials",
+              })
+          }
 
-        if(!user) {
-            return res.status(401).json({
-                message: "The email or password are incorrect"
-            })
-        }
-        const passwordValid = await bcrypt.compare(password, user.password)
+          const passwordValid = await bcrypt.compare(password, user.password)
+  
+          if (!passwordValid) {
+              return res.status(401).json({
+                  message: "You shall not pass!",
+              })
+          }
+  
+      const token = generateToken(user)
+  
+      res.status(200).json({
+        message: `Welcome ${user.name}!`,
+        token,
+          })
+      } catch(err) {
+          next(err)
+      }
+});
 
-        if(!passwordValid) {
-            return res.status(401).json({
-                message: "Incorrect Password"
-            })
-        }
+function generateToken(user) {
+const payload = {
+    subject: user.id,
+    username: user.email,
+}
 
-        const payload = {
-            userId: user.id,
-            username: user.email
-        }
+const options = {
+    expiresIn: '1d'
+}
 
-        res.json({
-            message: `Welcome ${user.name}`,
-            token: jwt.sign(payload, 'secKey.JWT_SECRET')
-        })
-    }catch(err) {
-        next(err)
-    }
-})
+const jwtSecret = process.env.JWT_SECRET || 'keep it secret, keep it safe'
+
+return jwt.sign(payload, jwtSecret, options)
+}
 
 router.put("/:id", (req, res, next) => {
     try{
@@ -122,19 +134,6 @@ router.delete("/:id", async (req, res, next) => {
         await Users.remove(req.params.id)
         res.status(204).end()
     }catch (err) {
-        next(err)
-    }
-})
-
-router.get("logoff", async (req, res, next) => {
-    try{
-        res.sessions.destroy((err) => {
-            if (err) {
-                next(err)
-            }
-            res.status(204).end()
-        })
-    }catch(err) {
         next(err)
     }
 })
