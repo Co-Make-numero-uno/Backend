@@ -33,10 +33,10 @@ router.put("/:id", (req, res, next) => {
         const issue = req.body
 
         if (
-            !issue.title||
+            !issue.title ||
             !issue.description ||
             !issue.city ||
-            !issue.state ||
+            !issue.state
         ) {
             return res.status(404).json({
                 message: "Please enter all required fields"
