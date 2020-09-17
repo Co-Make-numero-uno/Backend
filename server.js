@@ -1,7 +1,7 @@
 const express = require('express');
 const server = express();
-const usersRouter = require('./users/usersRouter');
-const issuesRouter = require('./issues/issuesRouter');
+const usersRouter = require('./users/users-router');
+const issuesRouter = require('./issues/issues-router');
 
 server.use(express.json());
 server.use('/users', usersRouter);
