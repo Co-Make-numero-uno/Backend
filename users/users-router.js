@@ -56,6 +56,11 @@ router.post("/login", async (req, res, next) => {
         const { email, password } = req.body
         const user = await Users.findBy({ email }).first()
 
+        console.log(email)
+        console.log(password)
+        console.log(user.email)
+        console.log(user.password)        
+
         if(!user) {
             return res.status(401).json({
                 message: "The email or password are incorrect"
@@ -76,7 +81,7 @@ router.post("/login", async (req, res, next) => {
 
         res.json({
             message: `Welcome ${user.name}`,
-            token: jwt.sign(payload, secKey.JWT_SECRET)
+            token: jwt.sign(payload, 'secKey.JWT_SECRET')
         })
     }catch(err) {
         next(err)
