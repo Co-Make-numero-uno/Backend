@@ -54,12 +54,7 @@ router.post("/register", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
     try{
         const { email, password } = req.body
-        const user = await Users.findBy({ email }).first()
-
-        console.log(email)
-        console.log(password)
-        console.log(user.email)
-        console.log(user.password)        
+        const user = await Users.findBy({ email }).first()     
 
         if(!user) {
             return res.status(401).json({
