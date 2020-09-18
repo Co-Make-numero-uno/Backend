@@ -1,6 +1,4 @@
 const express = require("express")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
 const Issues = require("./issues-model")
 
 
@@ -23,6 +21,28 @@ router.get("/:id", async (req, res, next) => {
             })
         }
         res.json(issue)
+    }catch(err) {
+        next(err)
+    }
+})
+
+router.post("/issue", async (req, res, next) => {
+    try{
+        const { title, description, city, state } = req.body
+        const issue= await Issues.findBy({ email }).first()
+
+        if(issue) {
+            return res.status(409).json({
+                message: "issue already exists"
+            })
+        }
+        const newIssue= await Users.add({
+            title,
+            description,
+            city,
+            state
+        })
+        res.status(201).json(newIssue)
     }catch(err) {
         next(err)
     }
