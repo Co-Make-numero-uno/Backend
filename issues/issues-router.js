@@ -26,17 +26,17 @@ router.get("/:id", async (req, res, next) => {
     }
 })
 
-router.post("/issue", async (req, res, next) => {
+router.post("/issues", async (req, res, next) => {
     try{
         const { title, description, city, state } = req.body
-        const issue= await Issues.findBy({ email }).first()
+        const issue= await Issues.findBy({ title }).first()
 
         if(issue) {
             return res.status(409).json({
                 message: "issue already exists"
             })
         }
-        const newIssue= await Users.add({
+        const newIssue= await Issues.add({
             title,
             description,
             city,
