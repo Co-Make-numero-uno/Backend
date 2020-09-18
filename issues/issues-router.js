@@ -17,7 +17,7 @@ router.get("/:id", async (req, res, next) => {
         const issue = await Issues.findById(req.params.id)
         if(!issue) {
             return res.status(404).json({
-                message: "Unable to find the issue with that id"
+                error: "Unable to find the issue with that id"
             })
         }
         res.json(issue)
