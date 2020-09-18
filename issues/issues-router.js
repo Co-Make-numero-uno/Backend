@@ -1,6 +1,4 @@
 const express = require("express")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
 const Issues = require("./issues-model")
 
 
@@ -19,10 +17,32 @@ router.get("/:id", async (req, res, next) => {
         const issue = await Issues.findById(req.params.id)
         if(!issue) {
             return res.status(404).json({
-                message: "Unable to find the issue with that id"
+                error: "Unable to find the issue with that id"
             })
         }
         res.json(issue)
+    }catch(err) {
+        next(err)
+    }
+})
+
+router.post("/issues", async (req, res, next) => {
+    try{
+        const { title, description, city, state } = req.body
+        const issue= await Issues.findBy({ title }).first()
+
+        if(issue) {
+            return res.status(409).json({
+                message: "issue already exists"
+            })
+        }
+        const newIssue= await Issues.add({
+            title,
+            description,
+            city,
+            state
+        })
+        res.status(201).json(newIssue)
     }catch(err) {
         next(err)
     }
