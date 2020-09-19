@@ -35,6 +35,7 @@ function remove(id) {
 
 // PUT / UPDATE user
 function update(changes, id) {
+    console.log('changes: ', changes)
     return db('users')
         .where('users.id', id)
         .update(changes)
