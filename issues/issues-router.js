@@ -66,13 +66,14 @@ router.put("/:id", async (req, res, next) => {
         const updateThisIssue = await Issues.findById(req.params.id)
             if(issue) {
                 Issues.update(issue, req.params.id).then(updatedIssue => {
-                    Issues.findById(req.params.id).then(updateIssue => {
+                    Issues.findById(req.params.id).then(updatedIssue => {
                         res.status(200).json({
-                            message: "Issue has been successfully update", updatedIssue
+                            message: "Issue has been successfully update", 
+                            updatedIssue
                         })
                     })
                 })
-            }else {
+            } else {
                 return res.status(404).json({
                     message: "Issue with that id could not be found"
                 })
