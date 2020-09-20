@@ -98,9 +98,6 @@ return jwt.sign(payload, jwtSecret, options)
 router.put("/:id", async (req, res, next) => {
     try {
         const user = await req.body
-        // console.log(user)
-        // console.log(req.params.id)
-
         if (
             !user.name ||
             !user.city ||
@@ -113,20 +110,14 @@ router.put("/:id", async (req, res, next) => {
             })
         }
 
-        Users.findById(req.params.id)
-        .then((user) => {
-            console.log('user: ', user)
-            console.log('em: ', user.email)
-            console.log('pw: ', user.password)
-            console.log('na: ', user.name)
-            console.log('ci: ', user.city)
-            console.log('st: ', user.state)
+        const updateThisUser = await Users.findById(req.params.id)
             if (user) {
-                Users.update(user, req.params.id).then((updatedUser) => {
-                    console.log(updatedUser)
-                    res.status(200).json({
-                        message: "User has been successfully updated",
-                        updatedUser
+                Users.update(user, req.params.id).then(updatedUser => {
+                    Users.findById(req.params.id).then(updatedUser => {
+                        res.status(200).json({
+                            message: "User has been successfully updated",
+                            updatedUser
+                        })
                     })
                 })
             } else {
@@ -134,7 +125,7 @@ router.put("/:id", async (req, res, next) => {
                     message: "User with that id could not be found"
                 })
             }
-        })
+
     } catch(err) {
         next(err)
     }
