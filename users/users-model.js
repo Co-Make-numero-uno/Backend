@@ -36,8 +36,9 @@ function remove(id) {
 // PUT / UPDATE user
 function update(changes, id) {
     return db('users')
-        .where('users.id', id)
+        .where('id', id)
         .update(changes)
+        .then(findById(id))
 }
 
 module.exports = {
