@@ -95,10 +95,9 @@ const jwtSecret = process.env.JWT_SECRET || 'keep it secret, keep it safe'
 return jwt.sign(payload, jwtSecret, options)
 }
 
-router.put("/:id", (req, res, next) => {
-    try{
-        const user = req.body
-
+router.put("/:id", async (req, res, next) => {
+    try {
+        const user = await req.body
         if (
             !user.name ||
             !user.city ||
@@ -111,20 +110,23 @@ router.put("/:id", (req, res, next) => {
             })
         }
 
-        Users.findById(req.params.userId)
-        .then((user) => {
+        const updateThisUser = await Users.findById(req.params.id)
             if (user) {
-                Users.update(user, req.params.userId).then((user) => {
-                    res.json({
-                        message: "User has been successfully updated"
+                Users.update(user, req.params.id).then(updatedUser => {
+                    Users.findById(req.params.id).then(updatedUser => {
+                        res.status(200).json({
+                            message: "User has been successfully updated",
+                            updatedUser
+                        })
                     })
                 })
+            } else {
+                return res.status(404).json({
+                    message: "User with that id could not be found"
+                })
             }
-            res.status(404).json({
-                message: "User with that id could not be found"
-            })
-        })
-    }catch(err) {
+
+    } catch(err) {
         next(err)
     }
 })
