@@ -48,7 +48,7 @@ router.post("/issues", async (req, res, next) => {
     }
 })
 
-router.put("/:id", (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
     try{
         const issue = await req.body
 
