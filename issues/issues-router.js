@@ -50,7 +50,7 @@ router.post("/issues", async (req, res, next) => {
 
 router.put("/:id", (req, res, next) => {
     try{
-        const issue = req.body
+        const issue = await req.body
 
         if (
             !issue.title ||
@@ -63,19 +63,20 @@ router.put("/:id", (req, res, next) => {
             })
         }
 
-        Issues.findById(req.params.issueId)
-        .then((issue) => {
-            if (issue) {
-                Issues.update(issue, req.params.issueId).then((issue) => {
-                    res.json({
-                        message: "Issue has been successfully updated"
+        const updateThisIssue = await Issues.findById(req.params.id)
+            if(issue) {
+                Issues.update(issue, req.params.id).then(updatedIssue => {
+                    Issues.findById(req.params.id).then(updateIssue => {
+                        res.status(200).json({
+                            message: "Issue has been successfully update", updatedIssue
+                        })
                     })
                 })
+            }else {
+                return res.status(404).json({
+                    message: "Issue with that id could not be found"
+                })
             }
-            res.status(404).json({
-                message: "The issue with that id could not be found"
-            })
-        })
     }catch(err) {
         next(err)
     }
