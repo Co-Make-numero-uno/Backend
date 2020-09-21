@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken")
 
 function restrict(role) {
-    const roles = ["user", "admin"]
+    const roles = ["user", "official"]
 
     return async (req, res, next) => {
         const authError = {
@@ -20,7 +20,7 @@ function restrict(role) {
 
                 if(role && roles.indexOf(decoded.userRole) < roles.indexOf(role)) {
                     return res.status(403).json({
-                        message: "You must be an admin to access this"
+                        message: "You must be an official to access this"
                     })
                 }
                 req.token = decoded
