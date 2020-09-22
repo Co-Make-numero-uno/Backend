@@ -26,7 +26,7 @@ router.get("/:id", authenticate.restrict(), async (req, res, next) => {
     }
 })
 
-router.post("/issues", authenticate.restrict(), async (req, res, next) => {
+router.post("/", authenticate.restrict(), async (req, res, next) => {
     try{
         const { title, description, city, state } = req.body
         const issue= await Issues.findBy({ title }).first()

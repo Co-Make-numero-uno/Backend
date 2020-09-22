@@ -1,19 +1,24 @@
 
 exports.up = async function(knex) {
   return knex.schema.createTable("upvote", (table) => {
-      table.integer("users_id")
+      table.increments()
+
+      table
+        .integer("user_id")
         .notNull()
         .references("id")
         .inTable("users")
-      table.integer("issues_id")
+      table
+        .integer("issue_id")
         .notNull()
         .references("id")
         .inTable("issues")
-        .onDelete("SET NULL")
-      table.primary("users_id", "issues_id")
+      table
+        .boolean("vote")
+        .defaultTo(0)
   })
 };
 
 exports.down = async function(knex) {
-  await knex.schema.dropTaleIfExists("upvote")
+  await knex.schema.dropTableIfExists("upvote")
 };
