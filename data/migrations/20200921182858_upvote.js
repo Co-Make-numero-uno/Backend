@@ -10,7 +10,7 @@ exports.up = async function(knex) {
         .references("id")
         .inTable("issues")
         .onDelete("SET NULL")
-      table.primary("users_id", "animal_id")
+      table.primary("users_id", "issues_id")
   })
 };
 
