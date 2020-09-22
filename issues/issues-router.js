@@ -1,6 +1,6 @@
 const express = require("express")
 const Issues = require("./issues-model")
-
+const authenticate = require("./issues-middleware")
 
 const router = express.Router()
 
@@ -12,7 +12,7 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", authenticate.restrict(), async (req, res, next) => {
     try{
         const issue = await Issues.findById(req.params.id)
         if(!issue) {
@@ -26,7 +26,7 @@ router.get("/:id", async (req, res, next) => {
     }
 })
 
-router.post("/issues", async (req, res, next) => {
+router.post("/issues", authenticate.restrict(), async (req, res, next) => {
     try{
         const { title, description, city, state } = req.body
         const issue= await Issues.findBy({ title }).first()
@@ -48,7 +48,7 @@ router.post("/issues", async (req, res, next) => {
     }
 })
 
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", authenticate.restrict(), async (req, res, next) => {
     try{
         const issue = await req.body
 
@@ -83,7 +83,7 @@ router.put("/:id", async (req, res, next) => {
     }
 })
 
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authenticate.restrict(), async (req, res, next) => {
     try{
         await Issues.remove(req.params.id)
         res.status(204).json({
