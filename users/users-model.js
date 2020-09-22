@@ -14,7 +14,7 @@ async function add(user) {
 // FIND user by ID
 function findById(id) {
     return db('users')
-        .select('id', 'name', 'email', 'city', 'state')
+        .select('id', 'name', 'email', 'city', 'state', 'password')
         .where({ id })
         .first()
 }

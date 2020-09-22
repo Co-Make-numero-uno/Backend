@@ -110,6 +110,10 @@ router.put("/:id", async (req, res, next) => {
             })
         }
 
+        if (user.password) {
+            user.password = await bcrypt.hash(user.password, 14)
+        }
+
         const updateThisUser = await Users.findById(req.params.id)
             if (user) {
                 Users.update(user, req.params.id).then(updatedUser => {

@@ -86,7 +86,9 @@ router.put("/:id", async (req, res, next) => {
 router.delete("/:id", async (req, res, next) => {
     try{
         await Issues.remove(req.params.id)
-        res.status(204).end()
+        res.status(204).json({
+            message: "The issue has been removed"
+        })
     }catch (err) {
         next(err)
     }
