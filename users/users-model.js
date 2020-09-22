@@ -22,7 +22,7 @@ function findById(id) {
 // FIND user by filter (name, in this case)
 function findBy(filter) {
 	return db('users')
-		.select('id', 'name', 'email', 'city', 'state')
+		.select('id', 'name', 'email', 'city', 'state', 'password')
 		.where(filter)
 }
 
@@ -36,8 +36,9 @@ function remove(id) {
 // PUT / UPDATE user
 function update(changes, id) {
     return db('users')
-        .where('users.id', id)
+        .where('id', id)
         .update(changes)
+        .then(findById(id))
 }
 
 module.exports = {

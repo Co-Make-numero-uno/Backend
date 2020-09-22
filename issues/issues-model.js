@@ -36,8 +36,9 @@ function remove(id) {
 // PUT / UPDATE issue
 function update(changes, id) {
     return db('issues')
-        .where('issues.id', id)
+        .where('id', id)
         .update(changes)
+        .then(findById(id))
 }
 
 module.exports = {
