@@ -1,46 +1,44 @@
 const express = require("express")
-const Issues = require("./issues-model")
-const authenticate = require("./issues-middleware")
-const upvotesRouter = require('../upvotes/upvote-router');
+const Upvotes = require("./upvote-model")
 
 const router = express.Router()
-router.use('/:id/upvote', upvotesRouter);
+
+router.get("/all", async (req, res, next) => {
+    try{
+        res.json(await Upvotes.findAll())
+    }catch(err) {
+        next(err)
+    }
+})
 
 router.get("/", async (req, res, next) => {
+    console.log('baseURL: ', req.baseUrl)
+    let upvoteArray = req.baseUrl.split("/")
+    let upvoteId = upvoteArray[2]
     try{
-        res.json(await Issues.findAll())
+        const upvote = await Upvotes.findById(upvoteId)
+        // if(!upvote) {
+        //     return res.status(404).json({
+        //         error: "Unable to find the issue with that id"
+        //     })
+        // }
+        res.json(upvote)
     }catch(err) {
         next(err)
     }
 })
 
-router.get("/:id", authenticate.restrict(), async (req, res, next) => {
-    try{
-        const issue = await Issues.findById(req.params.id)
-        if(!issue) {
-            return res.status(404).json({
-                error: "Unable to find the issue with that id"
-            })
-        }
-        res.json(issue)
-        console.log('token: ', req.token)
-        console.log('subject: ', req.token.subject)
-    }catch(err) {
-        next(err)
-    }
-})
-
-router.post("/", authenticate.restrict(), async (req, res, next) => {
+router.post("/", async (req, res, next) => {
     try{
         const { title, description, city, state } = req.body
-        const issue= await Issues.findBy({ title }).first()
+        const issue= await Upvotes.findBy({ title }).first()
 
         if(issue) {
             return res.status(409).json({
                 message: "issue already exists"
             })
         }
-        const newIssue= await Issues.add({
+        const newIssue= await Upvotes.add({
             title,
             description,
             city,
@@ -52,7 +50,7 @@ router.post("/", authenticate.restrict(), async (req, res, next) => {
     }
 })
 
-router.put("/:id", authenticate.restrict(), async (req, res, next) => {
+router.put("/:id", async (req, res, next) => {
     try{
         const issue = await req.body
 
@@ -67,10 +65,10 @@ router.put("/:id", authenticate.restrict(), async (req, res, next) => {
             })
         }
 
-        const updateThisIssue = await Issues.findById(req.params.id)
+        const updateThisIssue = await Upvotes.findById(req.params.id)
             if(issue) {
-                Issues.update(issue, req.params.id).then(updatedIssue => {
-                    Issues.findById(req.params.id).then(updatedIssue => {
+                Upvotes.update(issue, req.params.id).then(updatedIssue => {
+                    Upvotes.findById(req.params.id).then(updatedIssue => {
                         res.status(200).json({
                             message: "Issue has been successfully update", 
                             updatedIssue
@@ -87,9 +85,9 @@ router.put("/:id", authenticate.restrict(), async (req, res, next) => {
     }
 })
 
-router.delete("/:id", authenticate.restrict(), async (req, res, next) => {
+router.delete("/:id", async (req, res, next) => {
     try{
-        await Issues.remove(req.params.id)
+        await Upvotes.remove(req.params.id)
         res.status(204).json({
             message: "The issue has been removed"
         })
