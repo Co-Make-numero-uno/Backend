@@ -6,24 +6,28 @@ const router = express.Router()
 router.get("/all", async (req, res, next) => {
     try{
         res.json(await Upvotes.findAll())
-    }catch(err) {
+    } catch(err) {
         next(err)
     }
 })
 
-router.get("/", async (req, res, next) => {
-    console.log('baseURL: ', req.baseUrl)
-    let upvoteArray = req.baseUrl.split("/")
+function getUpvoteId(baseUrl) {
+    let upvoteArray = baseUrl.split("/")
     let upvoteId = upvoteArray[2]
+    return upvoteId
+}
+
+router.get("/", async (req, res, next) => {
+    const upvoteId = getUpvoteId(req.baseUrl)
     try{
         const upvote = await Upvotes.findById(upvoteId)
-        // if(!upvote) {
-        //     return res.status(404).json({
-        //         error: "Unable to find the issue with that id"
-        //     })
-        // }
+        if(!upvote) {
+            return res.status(404).json({
+                error: "User has not voted on this issue yet"
+            })
+        }
         res.json(upvote)
-    }catch(err) {
+    } catch(err) {
         next(err)
     }
 })
@@ -45,7 +49,7 @@ router.post("/", async (req, res, next) => {
             state
         })
         res.status(201).json(newIssue)
-    }catch(err) {
+    } catch(err) {
         next(err)
     }
 })
@@ -80,7 +84,7 @@ router.put("/:id", async (req, res, next) => {
                     message: "Issue with that id could not be found"
                 })
             }
-    }catch(err) {
+    } catch(err) {
         next(err)
     }
 })
@@ -91,7 +95,7 @@ router.delete("/:id", async (req, res, next) => {
         res.status(204).json({
             message: "The issue has been removed"
         })
-    }catch (err) {
+    } catch (err) {
         next(err)
     }
 })
