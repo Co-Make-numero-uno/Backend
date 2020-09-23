@@ -2,6 +2,7 @@ const express = require("express")
 const Issues = require("./issues-model")
 const authenticate = require("./issues-middleware")
 const upvotesRouter = require('../upvotes/upvote-router');
+// const Upvotes = require("../upvotes/upvote-model")
 
 const router = express.Router()
 router.use('/:id/upvote', upvotesRouter);
@@ -15,6 +16,8 @@ router.get("/", async (req, res, next) => {
 })
 
 router.get("/:id", authenticate.restrict(), async (req, res, next) => {
+    req.params.vish = 'vish'
+    console.log('issues-router: ', req.params.vish)
     try{
         const issue = await Issues.findById(req.params.id)
         if(!issue) {
@@ -97,5 +100,61 @@ router.delete("/:id", authenticate.restrict(), async (req, res, next) => {
         next(err)
     }
 })
+
+// UPVOTES
+
+// // GET all upvotes
+// router.get("/:id/upvote/all", async (req, res, next) => {
+//     console.log(req.params.vish)
+//     try{
+//         res.json(await Upvotes.findAll())
+//     } catch(err) {
+//         next(err)
+//     }
+// })
+
+// // GET upvote for ISSUE by ID
+// router.get("/:id/upvote", async (req, res, next) => {
+//     // const upvoteId = getUpvoteId(req.baseUrl)
+//     try{
+//         const upvote = await Upvotes.findById(req.params.id)
+//         if(!upvote) {
+//             return res.status(404).json({
+//                 error: "User has not voted on this issue yet"
+//             })
+//         }
+//         res.json(upvote)
+//     } catch(err) {
+//         next(err)
+//     }
+// })
+
+// // POST new vote for ISSUE by ID
+// router.post("/:id/upvote", authenticate.restrict(), async (req, res, next) => {
+//     console.log('token: ', req.token)
+//     console.log('subject: ', req.token.subject)    
+//     // const upvoteId = getUpvoteId(req.baseUrl)
+//     const userId = req.token.subject
+//     try{
+//         const { vote } = req.body
+//         // const issue = await Upvotes.findBy({ title }).first()
+//         const upvote = await Upvotes.findById(req.params.id)
+
+//         if(upvote) {
+//             return res.status(409).json({
+//                 message: "upvote already exists"
+//             })
+//         }
+
+//         const newVote= await Upvotes.add({
+//             user_id: userId,
+//             issue_id: req.params.id,
+//             vote: vote
+//         })
+//         res.status(201).json(newVote)
+//     } catch(err) {
+//         next(err)
+//     }
+// })
 
 module.exports = router

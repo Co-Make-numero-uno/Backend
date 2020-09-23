@@ -1,9 +1,12 @@
 const express = require("express")
 const Upvotes = require("./upvote-model")
+const authenticate = require("../issues/issues-middleware")
 
-const router = express.Router()
+const router = express.Router({mergeParams: true})
 
+// GET all votes for all issues
 router.get("/all", async (req, res, next) => {
+    console.log(req.params.vish)
     try{
         res.json(await Upvotes.findAll())
     } catch(err) {
@@ -11,16 +14,20 @@ router.get("/all", async (req, res, next) => {
     }
 })
 
-function getUpvoteId(baseUrl) {
-    let upvoteArray = baseUrl.split("/")
-    let upvoteId = upvoteArray[2]
-    return upvoteId
+// get issue id# from URL instead of params
+function getIssueId(baseUrl) {
+    let issueUrlArray = baseUrl.split("/")
+    let issueId = issueUrlArray[2]
+    return issueId
 }
 
-router.get("/", async (req, res, next) => {
-    const upvoteId = getUpvoteId(req.baseUrl)
+// GET vote by USER_ID and ISSUE_ID
+router.get("/", authenticate.restrict(), async (req, res, next) => {
+    const issueId = getIssueId(req.baseUrl)
+    const userId = req.token.subject
+
     try{
-        const upvote = await Upvotes.findById(upvoteId)
+        const upvote = await Upvotes.findById(issueId, userId)
         if(!upvote) {
             return res.status(404).json({
                 error: "User has not voted on this issue yet"
@@ -32,23 +39,27 @@ router.get("/", async (req, res, next) => {
     }
 })
 
-router.post("/", async (req, res, next) => {
+// POST new vote to issue by ID
+router.post("/", authenticate.restrict(), async (req, res, next) => {
+    console.log(req.token)
+    const upvoteId = getUpvoteId(req.baseUrl)
+    const userId = req.token.subject
     try{
-        const { title, description, city, state } = req.body
-        const issue= await Upvotes.findBy({ title }).first()
+        const { vote } = req.body
+        // const issue = await Upvotes.findBy({ title }).first()
+        const upvote = await Upvotes.findById(upvoteId)
 
-        if(issue) {
+        if(upvote) {
             return res.status(409).json({
-                message: "issue already exists"
+                message: "upvote already exists"
             })
         }
-        const newIssue= await Upvotes.add({
-            title,
-            description,
-            city,
-            state
+        const newVote= await Upvotes.add({
+            user_id: userId,
+            issue_id: upvoteId,
+            vote: vote
         })
-        res.status(201).json(newIssue)
+        res.status(201).json(newVote)
     } catch(err) {
         next(err)
     }

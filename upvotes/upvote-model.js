@@ -12,10 +12,12 @@ async function add(vote) {
 }
 
 // FIND upvote by ID
-function findById(id) {
+function findById(issueId, userId) {
+    console.log('IDs: ', issueId, userId)
     return db('upvote')
         .select('id', 'user_id', 'issue_id', 'vote')
-        .where({ id })
+        .where('issue_id', issueId)
+        .andWhere('user_id', userId)
         .first()
 }
 
