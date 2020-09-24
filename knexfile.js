@@ -19,7 +19,7 @@ module.exports = {
   testing: {
     client: 'sqlite3',
     connection: {
-      filename: './data/co-make.db3'
+      filename: './data/testing.db3'
     },
     useNullAsDefault: 'true',
     migrations: {
