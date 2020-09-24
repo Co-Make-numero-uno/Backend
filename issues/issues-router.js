@@ -1,8 +1,10 @@
 const express = require("express")
 const Issues = require("./issues-model")
 const authenticate = require("./issues-middleware")
+const upvotesRouter = require('../upvotes/upvote-router');
 
 const router = express.Router()
+router.use('/:id/upvote', upvotesRouter);
 
 router.get("/", async (req, res, next) => {
     try{
@@ -21,6 +23,8 @@ router.get("/:id", authenticate.restrict(), async (req, res, next) => {
             })
         }
         res.json(issue)
+        console.log('token: ', req.token)
+        console.log('subject: ', req.token.subject)
     }catch(err) {
         next(err)
     }

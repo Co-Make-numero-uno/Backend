@@ -15,7 +15,7 @@ exports.up = async function(knex) {
         .inTable("issues")
       table
         .boolean("vote")
-        .defaultTo(0)
+        .defaultTo(1)
   })
 };
 
