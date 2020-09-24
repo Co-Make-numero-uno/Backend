@@ -10,6 +10,23 @@ module.exports = {
     useNullAsDefault: 'true',
     migrations: {
       directory: './data/migrations'
+    },
+    seeds: {
+      directory: "./data/seeds"
+    }
+  },
+
+  testing: {
+    client: 'sqlite3',
+    connection: {
+      filename: './data/co-make.db3'
+    },
+    useNullAsDefault: 'true',
+    migrations: {
+      directory: './data/migrations'
+    },
+    seeds: {
+      directory: "./data/seeds"
     }
   },
 
