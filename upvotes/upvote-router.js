@@ -14,7 +14,7 @@ router.get("/all", async (req, res, next) => {
     }
 })
 
-// get issue id# from URL instead of params
+// helper to get issue id# from URL instead of params
 function getIssueId(baseUrl) {
     let issueUrlArray = baseUrl.split("/")
     let issueId = issueUrlArray[2]
@@ -39,70 +39,52 @@ router.get("/", authenticate.restrict(), async (req, res, next) => {
     }
 })
 
-// POST new vote to issue by ID
-router.post("/", authenticate.restrict(), async (req, res, next) => {
-    console.log(req.token)
-    const upvoteId = getUpvoteId(req.baseUrl)
+// POST new vote by ISSUE_ID and USER_ID (acts like adding an upvote)
+router.get("/vote", authenticate.restrict(), async (req, res, next) => {
+    const issueId = getIssueId(req.baseUrl)
     const userId = req.token.subject
-    try{
-        const { vote } = req.body
-        // const issue = await Upvotes.findBy({ title }).first()
-        const upvote = await Upvotes.findById(upvoteId)
+    // const vote = req.body.vote
 
-        if(upvote) {
+    // console.log('router: issueID, userID, vote: ', issueId, userId)
+
+    try{
+        const upvote = await Upvotes.findById(issueId, userId)
+        console.log('upvote: ', upvote)
+
+        if (upvote.length == 0) {
+            console.log('if empty: ', upvote)
+            const newVote = await Upvotes.add({
+                user_id: userId,
+                issue_id: issueId,
+                // vote: vote
+            })
+            // console.log('newVote: ', newVote)
+            return res.status(201).json(newVote)
+        }
+
+        if(upvote !== []) {
+            console.log('if not empty: ', upvote)
             return res.status(409).json({
-                message: "upvote already exists"
+                message: "Upvote already exists"
             })
         }
-        const newVote= await Upvotes.add({
-            user_id: userId,
-            issue_id: upvoteId,
-            vote: vote
-        })
-        res.status(201).json(newVote)
+
     } catch(err) {
         next(err)
     }
 })
 
-router.put("/:id", async (req, res, next) => {
+// DELETE vote by ISSUE_ID and USER_ID (acts like removing an upvote)
+router.delete("/", authenticate.restrict(), async (req, res, next) => {
+    const issueId = getIssueId(req.baseUrl)
+    const userId = req.token.subject
+
     try{
-        const issue = await req.body
+        const upvote = await Upvotes.findById(issueId, userId)
+        // console.log('upvote: ', upvote)
+        // console.log('upvote ID: ', upvote[0].id)
 
-        if (
-            !issue.title ||
-            !issue.description ||
-            !issue.city ||
-            !issue.state
-        ) {
-            return res.status(404).json({
-                message: "Please enter all required fields"
-            })
-        }
-
-        const updateThisIssue = await Upvotes.findById(req.params.id)
-            if(issue) {
-                Upvotes.update(issue, req.params.id).then(updatedIssue => {
-                    Upvotes.findById(req.params.id).then(updatedIssue => {
-                        res.status(200).json({
-                            message: "Issue has been successfully update", 
-                            updatedIssue
-                        })
-                    })
-                })
-            } else {
-                return res.status(404).json({
-                    message: "Issue with that id could not be found"
-                })
-            }
-    } catch(err) {
-        next(err)
-    }
-})
-
-router.delete("/:id", async (req, res, next) => {
-    try{
-        await Upvotes.remove(req.params.id)
+        await Upvotes.remove(upvote[0].id)
         res.status(204).json({
             message: "The issue has been removed"
         })
