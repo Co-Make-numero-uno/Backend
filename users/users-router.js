@@ -87,8 +87,7 @@ const payload = {
 }
 
 const options = {
-    // expiresIn: '1d'
-    expiresIn: "10m"
+    expiresIn: "30m"
 }
 
 const jwtSecret = process.env.JWT_SECRET || 'keep it secret, keep it safe'
