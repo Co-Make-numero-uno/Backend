@@ -2,7 +2,9 @@ const db = require('../data/dbConfig')
 
 // GET all issues
 function findAll() {
-	return db('issues').select('id', 'title', 'description', 'city', 'state')
+    return db('issues')
+        // .join('upvote', 'issues.id', 'upvote.issue_id')
+        .select('issues.id', 'title', 'description', 'city', 'state', 'votes')
 }
 
 // ADD issue
