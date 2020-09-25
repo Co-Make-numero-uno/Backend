@@ -7,9 +7,9 @@ function findAll() {
 
 // GET issue's upvote total by ID
 function findVotesById(issueId) {
+    console.log('model issueId: ', issueId)
     return db('upvote')
-        .count('issue_id')
-        .where('issue_id', issueId)
+        .count('issue_id').where('issue_id', issueId)
 }
 
 // ADD upvote
@@ -37,5 +37,6 @@ module.exports = {
     add,
     findAll,
     findById,
+    findVotesById,
     remove
 }

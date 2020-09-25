@@ -40,7 +40,7 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
         const upvote = await Upvotes.findById(issueId, userId)
 
         if(upvote.length == 1) {
-            console.log(upvote)
+            console.log('upvote: ', upvote)
             return res.status(409).json({
                 message: "Upvote already exists"
             })
@@ -53,15 +53,13 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
                 user_id: userId,
                 issue_id: issueId,
             })
-            // // get issue by id
-
-            // // get # of votes
-            // // const numOfVotes = Issues.issueId.votes
-            // const numOfVotes = await 
-            // // get # of votes
-            // // add 1 to votes
-            // // save it
-            // const addVote = Issues.update(changes, issueId)
+            // This part increments the issue's vote total
+            const getVotes = await Upvotes.findVotesById(issueId)
+            currentVotes = getVotes[0]['count(`issue_id`)']
+            const addVote = {
+                votes: currentVotes + 1
+            }
+            Issues.update(addVote, issueId)
             return res.status(201).json(newVote)
         }
 

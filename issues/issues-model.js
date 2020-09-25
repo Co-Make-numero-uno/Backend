@@ -43,13 +43,6 @@ function update(changes, id) {
         .then(findById(id))
 }
 
-// // GET issue's upvote total by ID
-// function findVotesById(id) {
-//     return db('issues')
-//         .count('votes')
-//         .where('id', id)
-// }
-
 module.exports = {
     add,
     findAll,
