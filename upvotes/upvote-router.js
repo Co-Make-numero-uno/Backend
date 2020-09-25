@@ -1,5 +1,6 @@
 const express = require("express")
 const Upvotes = require("./upvote-model")
+const Issues = require("../issues/issues-model")
 const authenticate = require("../issues/issues-middleware")
 
 const router = express.Router({mergeParams: true})
@@ -52,6 +53,15 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
                 user_id: userId,
                 issue_id: issueId,
             })
+            // // get issue by id
+
+            // // get # of votes
+            // // const numOfVotes = Issues.issueId.votes
+            // const numOfVotes = await 
+            // // get # of votes
+            // // add 1 to votes
+            // // save it
+            // const addVote = Issues.update(changes, issueId)
             return res.status(201).json(newVote)
         }
 

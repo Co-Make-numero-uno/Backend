@@ -2,7 +2,9 @@ const db = require('../data/dbConfig')
 
 // GET all issues
 function findAll() {
-	return db('issues').select('id', 'title', 'description', 'city', 'state')
+    return db('issues')
+        // .join('upvote', 'issues.id', 'upvote.issue_id')
+        .select('issues.id', 'title', 'description', 'city', 'state', 'votes')
 }
 
 // ADD issue
@@ -40,6 +42,13 @@ function update(changes, id) {
         .update(changes)
         .then(findById(id))
 }
+
+// // GET issue's upvote total by ID
+// function findVotesById(id) {
+//     return db('issues')
+//         .count('votes')
+//         .where('id', id)
+// }
 
 module.exports = {
     add,

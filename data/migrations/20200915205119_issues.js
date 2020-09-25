@@ -15,6 +15,9 @@ exports.up = function(knex) {
         table
             .string('state', 2)
             .notNullable();
+        table
+            .integer('votes')
+            .defaultTo(0)
     });
 };
 
