@@ -4,16 +4,6 @@ const authenticate = require("../issues/issues-middleware")
 
 const router = express.Router({mergeParams: true})
 
-// GET all votes for all issues
-router.get("/all", async (req, res, next) => {
-    console.log(req.params.vish)
-    try{
-        res.json(await Upvotes.findAll())
-    } catch(err) {
-        next(err)
-    }
-})
-
 // helper to get issue id# from URL instead of params
 function getIssueId(baseUrl) {
     let issueUrlArray = baseUrl.split("/")
@@ -48,7 +38,8 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
     try{
         const upvote = await Upvotes.findById(issueId, userId)
 
-        if(upvote !== []) {
+        if(upvote.length == 1) {
+            console.log(upvote)
             return res.status(409).json({
                 message: "Upvote already exists"
             })
@@ -71,7 +62,7 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
 
 // DELETE vote by ISSUE_ID and USER_ID (acts like removing an upvote)
 // Deletes the given row. The row itself IS an upvote.
-router.delete("/", authenticate.restrict(), async (req, res, next) => {
+router.delete("/vote", authenticate.restrict(), async (req, res, next) => {
     const issueId = getIssueId(req.baseUrl)
     const userId = req.token.subject
 

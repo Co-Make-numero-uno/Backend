@@ -1,5 +1,6 @@
 const express = require("express")
 const Issues = require("./issues-model")
+const Upvotes = require("../upvotes/upvote-model")
 const authenticate = require("./issues-middleware")
 const upvotesRouter = require('../upvotes/upvote-router');
 
@@ -10,6 +11,15 @@ router.get("/", async (req, res, next) => {
     try{
         res.json(await Issues.findAll())
     }catch(err) {
+        next(err)
+    }
+})
+
+// GET all votes for all issues
+router.get("/upvotes", async (req, res, next) => {
+    try{
+        res.json(await Upvotes.findAll())
+    } catch(err) {
         next(err)
     }
 })
