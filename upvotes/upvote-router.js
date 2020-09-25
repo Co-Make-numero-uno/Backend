@@ -40,7 +40,6 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
         const upvote = await Upvotes.findById(issueId, userId)
 
         if(upvote.length == 1) {
-            console.log('upvote: ', upvote)
             return res.status(409).json({
                 message: "Upvote already exists"
             })
@@ -48,7 +47,6 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
 
         // This part adds the upvote row
         if (upvote.length == 0) {
-            console.log('if empty: ', upvote)
             const newVote = await Upvotes.add({
                 user_id: userId,
                 issue_id: issueId,
@@ -85,6 +83,13 @@ router.delete("/vote", authenticate.restrict(), async (req, res, next) => {
 
         // This part removes the upvote row
         await Upvotes.remove(upvote[0].id)
+            // This part decrements the issue's vote total
+            const getVotes = await Upvotes.findVotesById(issueId)
+            currentVotes = getVotes[0]['count(`issue_id`)']
+            const subtractVote = {
+                votes: currentVotes - 1
+            }
+            Issues.update(subtractVote, issueId)
         res.status(204).json({
             message: "The upvote has been removed"
         })
