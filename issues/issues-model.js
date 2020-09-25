@@ -2,7 +2,8 @@ const db = require('../data/dbConfig')
 
 // GET all issues
 function findAll() {
-	return db('issues').select('id', 'title', 'description', 'city', 'state')
+    return db('issues')
+        .select('issues.id', 'title', 'description', 'city', 'state', 'votes')
 }
 
 // ADD issue

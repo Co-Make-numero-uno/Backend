@@ -5,6 +5,12 @@ function findAll() {
 	return db('upvote').select('id', 'user_id', 'issue_id', 'vote')
 }
 
+// GET issue's upvote total by ID
+function findVotesById(issueId) {
+    return db('upvote')
+        .count('issue_id').where('issue_id', issueId)
+}
+
 // ADD upvote
 async function add(vote) {
     const [id] = await db('upvote').insert(vote)
@@ -13,7 +19,6 @@ async function add(vote) {
 
 // FIND upvote by ID
 function findById(issueId, userId) {
-    console.log('model: issue & user IDs: ', issueId, userId)
     return db('upvote')
         .where('issue_id', issueId)
         .andWhere('user_id', userId)
@@ -30,5 +35,6 @@ module.exports = {
     add,
     findAll,
     findById,
+    findVotesById,
     remove
 }
