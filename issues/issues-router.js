@@ -33,8 +33,6 @@ router.get("/:id", authenticate.restrict(), async (req, res, next) => {
             })
         }
         res.json(issue)
-        console.log('token: ', req.token)
-        console.log('subject: ', req.token.subject)
     }catch(err) {
         next(err)
     }

@@ -7,7 +7,6 @@ function findAll() {
 
 // GET issue's upvote total by ID
 function findVotesById(issueId) {
-    console.log('model issueId: ', issueId)
     return db('upvote')
         .count('issue_id').where('issue_id', issueId)
 }
@@ -20,7 +19,6 @@ async function add(vote) {
 
 // FIND upvote by ID
 function findById(issueId, userId) {
-    console.log('model: issue & user IDs: ', issueId, userId)
     return db('upvote')
         .where('issue_id', issueId)
         .andWhere('user_id', userId)
