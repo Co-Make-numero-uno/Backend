@@ -1,6 +1,5 @@
 const express = require("express")
 const Upvotes = require("./upvote-model")
-const Issues = require("../issues/issues-model")
 const authenticate = require("../issues/issues-middleware")
 
 const router = express.Router({mergeParams: true})
@@ -44,20 +43,13 @@ router.get("/vote", authenticate.restrict(), async (req, res, next) => {
                 message: "Upvote already exists"
             })
         }
-
         // This part adds the upvote row
         if (upvote.length == 0) {
             const newVote = await Upvotes.add({
                 user_id: userId,
                 issue_id: issueId,
-            })
-            // This part increments the issue's vote total
-            const getVotes = await Upvotes.findVotesById(issueId)
-            currentVotes = getVotes[0]['count(`issue_id`)']
-            const addVote = {
-                votes: currentVotes + 1
-            }
-            Issues.update(addVote, issueId)
+            });
+
             return res.status(201).json(newVote)
         }
 
